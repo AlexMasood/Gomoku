@@ -38,6 +38,17 @@ class AI:
             for p in positions:
                 nextBoard = currentBoard.copy()
                 nextBoard[p[0],p[1]] = symbol
+
+                #apply board shrinking function
+                while(np.all(nextBoard[0] == 0)):
+                    nextBoard = np.delete(nextBoard,(0), axis = 0)
+                while(np.all(nextBoard[-1] == 0)):
+                    nextBoard = np.delete(nextBoard,(-1), axis = 0)
+                while(np.all(nextBoard[:, 0] == 0)):
+                    nextBoard = np.delete(nextBoard,(0), axis = 1)
+                while(np.all(nextBoard[: ,-1] == 0)):
+                    nextBoard = np.delete(nextBoard,(-1), axis = 1)
+                
                 nextBoardHash = self.getHash(nextBoard)
                 if (self.statesValues.get(nextBoardHash) is None):
                     value = 0
@@ -70,7 +81,7 @@ class AI:
     Returns a string for the filename consisting of policy followed by row, col,win number, and position of AI
     """
     def fileNaming(self, row, col,winNum,playerPos):
-        return "policy_"+str(row)+"_by_"+str(col)+"_"+str(winNum)+"_"+str(playerPos)
+        return "policy_"+str(row)+"_by_"+str(col)+"_"+str(winNum)+"_"+str(playerPos)+"_sf"
 
 
     def savePolicy(self, row, col, winNum):

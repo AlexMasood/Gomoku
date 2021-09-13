@@ -19,7 +19,18 @@ class Board:
         self.boardHash = str(self.board.reshape(self.row*self.col))
         return self.boardHash
     
-    
+    def getShrinkHash(self):
+        boardCopy = self.board.copy()
+        while(np.all(boardCopy[0] == 0)):
+            boardCopy = np.delete(boardCopy,(0), axis = 0)
+        while(np.all(boardCopy[-1] == 0)):
+            boardCopy = np.delete(boardCopy,(-1), axis = 0)
+        while(np.all(boardCopy[:, 0] == 0)):
+            boardCopy = np.delete(boardCopy,(0), axis = 1)
+        while(np.all(boardCopy[: ,-1] == 0)):
+            boardCopy = np.delete(boardCopy,(-1), axis = 1)
+        
+        return str(boardCopy.reshape(len(boardCopy)*len(boardCopy[0])))
     
     """
     resets all dates for training
@@ -62,12 +73,11 @@ class Board:
     returns true if check passes, else false
     """
     def checkRow(self,row, player):
-        rowCopy = np.copy(row)
-        for index in range(0,len(rowCopy)):
-            if (rowCopy[index] != player):
-                rowCopy[index] = 0
-        for x in range((len(rowCopy)-self.winNum+1)):
-            if (all(rowCopy[x:self.winNum+x])):
+        for index in range(0,len(row)):
+            if (row[index] != player):
+                row[index] = 0
+        for x in range((len(row)-self.winNum+1)):
+            if (all(row[x:self.winNum+x])):
                 return True
         else:
             return False
@@ -89,8 +99,8 @@ class Board:
                     self.isEnd = True
                     return True
             boardCopy = np.rot90(boardCopy)
-        diags = [boardCopy[::-1,:].diagonal(i)for i in range(-boardCopy.shape[0]+1,boardCopy.shape[1])]
-        diags.extend(boardCopy.diagonal(i) for i in range(boardCopy.shape[1]-1,-boardCopy.shape[0],-1))
+        diags = [boardCopy[::-1,:].diagonal(i).copy() for i in range(-boardCopy.shape[0]+1,boardCopy.shape[1])]
+        diags.extend(boardCopy.diagonal(i).copy() for i in range(boardCopy.shape[1]-1,-boardCopy.shape[0],-1))
         
         for row in diags:
             if(len(row)>=self.winNum):

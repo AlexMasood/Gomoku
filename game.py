@@ -35,15 +35,17 @@ class Game:
     """
     def aIVsAI(self, row, col, winNum, rounds = 100):
         for i in range(rounds):
-            if(i%1000 == 0):
-                print("rounds {}".format(i))
+            #if(i%1 == 0):
+            print("rounds {}".format(i))
             boardObj = b(row, col, winNum)
             while (self.beingPlayed):
                 positions = boardObj.getRemainingMoves(boardObj.getBoard())
                 p1Action = self.p1.chooseAction(positions, boardObj.getBoard(), 1)
                 boardObj.move(1,p1Action[0],p1Action[1])
                 boardHash = boardObj.getHash()
+                boardShrinkHash = boardObj.getShrinkHash()
                 self.p1.addState(boardHash)
+                self.p1.addState(boardShrinkHash)
 
                 if((boardObj.checkBoard(1)) or not(boardObj.getRemainingMoves(boardObj.getBoard()))):
                     self.giveReward(boardObj)
@@ -56,7 +58,9 @@ class Game:
                     p2Action = self.p2.chooseAction(positions, boardObj.getBoard(), 2)
                     boardObj.move(2,p2Action[0],p2Action[1])
                     boardHash = boardObj.getHash()
+                    boardShrinkHash = boardObj.getShrinkHash()
                     self.p2.addState(boardHash)
+                    self.p2.addState(boardShrinkHash)
 
                     if((boardObj.checkBoard(2)) or not(boardObj.getRemainingMoves(boardObj.getBoard()))):
                         self.giveReward(boardObj)
@@ -181,6 +185,6 @@ def humanVsHumanGame(row,col,winNum):
     st = Game(p1,p2)
     st.humanVsHuman(row,col, winNum)
 
-trainAI(100000,5,5,4)
-#computerFirstGame(3,3,3)
+trainAI(1000,15,15,5)
+#computerFirstGame(4,4,4)
 #humanVsHumanGame(10,10,5)
